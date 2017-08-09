@@ -69,7 +69,7 @@ function peerinfo() {
                 ping.innerHTML = data[i].pingtime;
                 version.innerHTML = data[i].version;
                 subversion.innerHTML = data[i].subver;
-                blockheight.innerHTML = data[i].startingheight;
+                blockheight.innerHTML = data[i].synced_blocks;
 
                 tr.append(ip);
                 tr.append(ping);
