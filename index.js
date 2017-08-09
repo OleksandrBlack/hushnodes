@@ -1,16 +1,93 @@
-const nodeinfo = require('./lib'),
-      bitcoin = require('bitcoin'),
-      config = require('./config.json');
+const express = require('express');
+const request = require('request');
+const bitcoin = require('bitcoin');
+const config = require('./config');
+const url = require('url');
 
-var node = null;
+const app = express();
+const node = new bitcoin.Client(config.node);
 
-function init() {
-    node = new bitcoin.Client(config.node);
+var peerInfo = null;
+var peerLoc = null;
+var info = null;
 
-   nodeinfo.server.start(config.server.port, node);
+function getInfo(next) {
+    node.cmd('getpeerinfo', (err, res, resHeaders) => {
+        if (err) throw err
+
+        peerInfo = res;
+
+        if (next)
+            getLoc(res);
+    });
+
+    node.cmd('getinfo', (err, res, resHeaders) => {
+        if (err) throw err;
+
+        info = res;
+    });
 }
 
+function getLoc(peerData) {
+    var arr = [];
+    var total = peerData.length;
+    var count = 0;
 
-(function () {
-    init();
-})()
+    for (var peer in peerData) {
+        (function(index) {
+            request('http://ipinfo.io/' + url.parse('http://'+peerData[peer].addr).hostname, (err, res, body) => {
+                if (err) callback(err);
+
+                body = JSON.parse(body);
+                if (body.loc) {
+                    var arr2 = body.loc.split(',');
+                    arr2.push('0.2');
+                    body.loc = arr2;
+                } else {
+                    body.loc = '1,1,0.2';
+                    body.country = 'unknown';
+                }
+                
+                arr.push(body)
+                count++;
+
+                if (count > total - 1)
+                    peerLoc = arr;
+            });
+        })(peer);
+    }
+}
+
+function start(port) {
+    getInfo(node, true);
+
+    setInterval((function a() {
+        getInfo.bind(false);
+	return a;
+    })(), 5000);
+
+    setInterval((function b() {
+        getLoc.bind(peerLoc);
+	return b;
+    })(), 600000);
+
+    app.use('/', express.static('public'));
+
+    app.get('/nodeInfo', (request, response) => {
+        response.send(info);
+    });
+
+    app.get('/peerInfo', (request, response) => {
+        response.send(peerInfo);
+    });
+
+    app.get('/peerLoc', (request, response) => {
+        response.send(peerLoc);
+    });
+
+    app.listen(port, function () {
+        console.log ('Server listening on port %s', port);
+    });
+};
+
+start(config.server.port);
