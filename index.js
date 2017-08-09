@@ -61,15 +61,9 @@ function getLoc(peerData) {
 function start(port) {
     getInfo(node, true);
 
-    setInterval((function a() {
-        getInfo.bind(false);
-	return a;
-    })(), 5000);
+    setInterval(getInfo, 5000, false);
 
-    setInterval((function b() {
-        getLoc.bind(peerLoc);
-	return b;
-    })(), 600000);
+    setInterval(getLoc, 600000, peerInfo);
 
     app.use('/', express.static('public'));
 
