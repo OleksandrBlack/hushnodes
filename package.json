@@ -1,0 +1,16 @@
+{
+  "name": "nodeinfo",
+  "version": "1.0.0",
+  "description": "displays info about nodes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "anarch3",
+  "license": "MIT",
+  "dependencies": {
+    "bitcoin": "",
+    "express": "",
+    "request": "^2.81.0"
+  }
+}

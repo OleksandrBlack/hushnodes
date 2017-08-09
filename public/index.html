@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Zencash Network</title>
+</head>
+<style>
+  html {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: #000 center center no-repeat;
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 13px;
+    line-height: 20px;
+    height: 100%;
+  }
+
+  .leftside {
+    width: 270px;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+  }
+
+  .rightside {
+    width: 150px;
+    position: absolute;
+    right: 10px;
+    margin: 5px;
+    padding: 10px;
+  }
+
+  table,
+  th,
+  td {
+    border: 1px hidden;
+    color: #fff;
+  }
+
+  .info {
+    font-size: 11px;
+    position: absolute;
+    bottom: 5px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 3px;
+    right: 10px;
+    padding: 10px;
+  }
+</style>
+
+<body>
+  <div class="globe" id="globe" style="style=" color: rgb(255, 255, 255); font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 13px; line-height: 20px; font-family: Arial, sans-serif; ""></div>
+
+  <div class="leftside">
+    <br><br>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Node IP</th>
+          <th>Pingtime</th>
+          <th>Version</th>
+          <th>Subversion</th>
+          <th>Blockheight</th>
+        </tr>
+      </thead>
+      <tbody id="tablebody">
+      </tbody>
+    </table>
+  </div>
+
+  <div class="rightside">
+    <p id="nodes"></p>
+    <p>Node versions</p>
+    <div class="peer" id="peer"></div>
+    <br>
+    <br>
+    <p>Countries</p>
+    <div id="country"></div>
+  </div>
+
+  <div class="info">
+    <p><strong>Want to appear on this list? Append `addnode=zennodes.network` to your zen.conf Reverse IP info from <a href="http://ipinfo.io/">ipinfo.io</a></strong></p>
+  </div>
+</body>
+
+<script src="globe/third-party/Detector.js"></script>
+<script src="globe/third-party/three.min.js"></script>
+<script src="globe/third-party/Tween.js"></script>
+<script src="globe/globe.js"></script>
+<script src="main.js"></script>
+
+</html>
