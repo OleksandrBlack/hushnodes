@@ -63,7 +63,11 @@ function start(port) {
 
     setInterval(getInfo, 5000, false);
 
-    setInterval(getLoc, 600000, peerInfo);
+    const delayed  = function () {
+        getLoc(peerInfo);
+    };
+    
+    setInterval(delayed, 600000);
 
     app.use('/', express.static('public'));
 
