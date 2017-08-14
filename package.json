@@ -9,8 +9,10 @@
   "author": "anarch3",
   "license": "MIT",
   "dependencies": {
+    "async": "^2.5.0",
     "bitcoin": "",
     "express": "",
-    "request": "^2.81.0"
+    "request": "^2.81.0",
+    "socket.io": "^2.0.3"
   }
 }

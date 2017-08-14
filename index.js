@@ -2,29 +2,25 @@ const express = require('express');
 const request = require('request');
 const bitcoin = require('bitcoin');
 const config = require('./config');
+const async = require('async');
 const url = require('url');
 
 const app = express();
 const node = new bitcoin.Client(config.node);
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
 
-var peerInfo = null;
+//Since this is refreshed every hour, make it a global
 var peerLoc = null;
-var info = null;
 
 function getInfo(next) {
     node.cmd('getpeerinfo', (err, res, resHeaders) => {
         if (err) throw err
 
-        peerInfo = res;
+        io.emit('peerInfo', res);
 
         if (next)
             getLoc(res);
-    });
-
-    node.cmd('getinfo', (err, res, resHeaders) => {
-        if (err) throw err;
-
-        info = res;
     });
 }
 
@@ -47,12 +43,13 @@ function getLoc(peerData) {
                     body.loc = '1,1,0.2';
                     body.country = 'unknown';
                 }
-                
+
                 arr.push(body)
                 count++;
 
                 if (count > total - 1)
                     peerLoc = arr;
+                    io.emit('peerLoc', arr);
             });
         })(peer);
     }
@@ -61,31 +58,31 @@ function getLoc(peerData) {
 function start(port) {
     getInfo(node, true);
 
-    setInterval(getInfo, 5000, false);
+    setInterval(getInfo, 200, false);
 
     const delayed  = function () {
         getLoc(peerInfo);
     };
-    
+
     setInterval(delayed, 3600000);
 
     app.use('/', express.static('public'));
 
-    app.get('/nodeInfo', (request, response) => {
-        response.send(info);
-    });
-
-    app.get('/peerInfo', (request, response) => {
+    /*app.get('/peerInfo', (request, response) => {
         response.send(peerInfo);
     });
 
     app.get('/peerLoc', (request, response) => {
         response.send(peerLoc);
+    });*/
+
+    io.on('connection', function(socket) {
+        console.log('Connection!!! %s', socket.id);
+        io.emit('peerLoc', peerLoc);
     });
 
-    app.listen(port, function () {
-        console.log ('Server listening on port %s', port);
-    });
+    server.listen(port);
 };
+
 
 start(config.server.port);

@@ -53,12 +53,12 @@
   }
 </style>
 
-<body>
+<body id="body">
   <div class="globe" id="globe" style="style=" color: rgb(255, 255, 255); font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 13px; line-height: 20px; font-family: Arial, sans-serif; ""></div>
 
-  <div class="leftside">
+  <div id="leftside" class="leftside">
     <br><br>
-    <table class="table">
+    <table id="table" class="table">
       <thead>
         <tr>
           <th>Node IP</th>
@@ -68,15 +68,15 @@
           <th>Blockheight</th>
         </tr>
       </thead>
-      <tbody id="tablebody">
+      <tbody id="tbody">
       </tbody>
     </table>
   </div>
 
-  <div class="rightside">
+  <div id="rightside" class="rightside">
     <p id="nodes"></p>
     <p>Node versions</p>
-    <div class="peer" id="peer"></div>
+    <div id="peers"></div>
     <br>
     <br>
     <p>Countries</p>
@@ -88,6 +88,8 @@
   </div>
 </body>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 <script src="globe/third-party/Detector.js"></script>
 <script src="globe/third-party/three.min.js"></script>
 <script src="globe/third-party/Tween.js"></script>
