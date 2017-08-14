@@ -1,5 +1,5 @@
 # zennodes
-Displays info about connected nodes for any bitcoin derived cryptocurrencies.
+Displays info about connected nodes for any bitcoin derived cryptocurrency.
 ![example pic](http://i.imgur.com/qQAxdJX.png)
 
 ### Installation
