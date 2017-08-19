@@ -47,9 +47,10 @@ function getLoc(peerData) {
                 arr.push(body)
                 count++;
 
-                if (count > total - 1)
+                if (count > total - 1) {
                     peerLoc = arr;
                     io.emit('peerLoc', arr);
+                }
             });
         })(peer);
     }
