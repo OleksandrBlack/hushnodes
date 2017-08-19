@@ -1,11 +1,11 @@
 {
   "node": {
     "host": "127.0.0.1",
-    "port": 8231,
+    "port": 8822,
     "user": "zzzz",
     "pass": "qwerty"
   },
   "server": {
-    "port": 8080
+    "port": 9999
   }
 }
