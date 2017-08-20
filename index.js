@@ -1,7 +1,7 @@
 const express = require('express');
-const request = require('request');
 const bitcoin = require('bitcoin');
 const config = require('./config');
+const geoip2 = require('geoip2');
 const async = require('async');
 const url = require('url');
 
@@ -9,14 +9,16 @@ const app = express();
 const node = new bitcoin.Client(config.node);
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
+geoip2.init('./GeoLite2-City_20170801/GeoLite2-City.mmdb');
 
-//Since this is refreshed every hour, make it a global
+var peerInfo = null;
 var peerLoc = null;
 
 function getInfo(next) {
     node.cmd('getpeerinfo', (err, res, resHeaders) => {
         if (err) throw err
 
+        peerInfo = res;
         io.emit('peerInfo', res);
 
         if (next)
@@ -31,25 +33,25 @@ function getLoc(peerData) {
 
     for (var peer in peerData) {
         (function(index) {
-            request('http://ipinfo.io/' + url.parse('http://'+peerData[peer].addr).hostname, (err, res, body) => {
-                if (err) callback(err);
-
-                body = JSON.parse(body);
-                if (body.loc) {
-                    var arr2 = body.loc.split(',');
-                    arr2.push('0.2');
-                    body.loc = arr2;
+            const peerIP = url.parse('http://'+peerData[index].addr).hostname
+            geoip2.lookupSimple(peerIP, (err, body) => {
+                if (err || body == 'null') {
+                    body = {
+                        loc: '0,0,0.01',
+                        country: 'unknown',
+                        ip: peerIP
+                    };
                 } else {
-                    body.loc = '1,1,0.2';
-                    body.country = 'unknown';
+                    body.loc = body.location.latitude + ',' + body.location.longitude + ',0.2'
+                    body.ip = peerIP;
                 }
 
                 arr.push(body)
                 count++;
 
                 if (count > total - 1) {
-                    peerLoc = arr;
-                    io.emit('peerLoc', arr);
+                   peerLoc = arr;
+                   io.emit('peerLoc', arr);
                 }
             });
         })(peer);
@@ -59,23 +61,14 @@ function getLoc(peerData) {
 function start(port) {
     getInfo(node, true);
 
-    setInterval(getInfo, 200, false);
-
     const delayed  = function () {
         getLoc(peerInfo);
     };
 
-    setInterval(delayed, 3600000);
+    setInterval(getInfo, 200, false);
+    setInterval(delayed, 1000);
 
     app.use('/', express.static('public'));
-
-    /*app.get('/peerInfo', (request, response) => {
-        response.send(peerInfo);
-    });
-
-    app.get('/peerLoc', (request, response) => {
-        response.send(peerLoc);
-    });*/
 
     io.on('connection', function(socket) {
         console.log('Connection!!! %s', socket.id);
@@ -83,6 +76,7 @@ function start(port) {
     });
 
     server.listen(port);
+    console.log('Server listening on port %s', port);
 };
 
 
