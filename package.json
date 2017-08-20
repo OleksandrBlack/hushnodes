@@ -12,7 +12,7 @@
     "async": "^2.5.0",
     "bitcoin": "",
     "express": "",
-    "request": "^2.81.0",
+    "geoip2": "^1.0.5",
     "socket.io": "^2.0.3"
   }
 }

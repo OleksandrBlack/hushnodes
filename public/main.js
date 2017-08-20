@@ -5,7 +5,6 @@ var right = document.getElementById('rightside');
 var left = document.getElementById('leftside');
 
 socket.on('peerLoc', function(data) {
-    console.log('i be spawned');
     var countryContainer = document.createElement('div')
     countryContainer.setAttribute('id', 'country');
 
@@ -13,14 +12,12 @@ socket.on('peerLoc', function(data) {
     var countries = {};
 
     for (var i = 0; i < data.length; i++) {
-        globe.addData(data[i].loc, {
-            format: 'magnitude',
-            name: data[i].ip
-        });
-
+        var split = data[i].loc.split(',');
+        globe.addData(split, {format: 'magnitude'});
         globe.createPoints();
-        globe.animate();
     }
+
+    globe.animate();
 
     for (var i = 0; i < data.length; i++) {
         country.push(data[i].country)
