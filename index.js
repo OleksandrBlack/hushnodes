@@ -35,7 +35,7 @@ function getLoc(peerData) {
         (function(index) {
             const peerIP = url.parse('http://'+peerData[index].addr).hostname
             geoip2.lookupSimple(peerIP, (err, body) => {
-                if (err || body == 'null') {
+                if (err || !body) {
                     body = {
                         loc: '0,0,0.01',
                         country: 'unknown',

@@ -24,10 +24,6 @@ socket.on('peerLoc', function(data) {
     }
 
     append(country, countries, data, countryContainer)
-
-    var pnodes = document.getElementById('nodes')
-    pnodes.innerHTML = "Currently listing " + data.length + " nodes on the globe.";
-
     right.replaceChild(countryContainer, document.getElementById('country'));
 });
 
@@ -74,6 +70,14 @@ socket.on('peerInfo', function(data) {
 
     tableContainer.replaceChild(table, document.getElementById('tbody'));
     right.replaceChild(peerContainer, document.getElementById('peers'));
+});
+
+$('#slide').on('click', function() {
+    if ($('#leftside').css('left') =='0px') {
+        $('#leftside').animate({left: '-100%'}, 1000);
+    } else {
+        $('#leftside').animate({left: '0'}, 1000);
+    }
 });
 
 function append(arr, obj, data, container) {
